@@ -1,0 +1,9 @@
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+from .models import Message
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ("id", "sender", "content", "sent_at")
+
+admin.site.register(Message, MessageAdmin)
+

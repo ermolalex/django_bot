@@ -1,0 +1,18 @@
+django
+pydantic
+fastapi
+djantic2
+pytest
+pytest-django
+python-dotenv
+aiogram
+uvicorn[standard]
+
+requests
+zulip
+
+# Only required for serverless deployment
+# mangum
+
+# Only required if using Postgres
+# psycopg2-binary
