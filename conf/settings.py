@@ -26,13 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$7x_b_afz1ww%limgw2^8*k_d-nkjow-)k(-my1^$f0oata_8g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'tediously-potent-merlin.cloudpub.ru',
     'localhost',
     '127.0.0.1',
-
+    '103.88.243.84',
 ]
 
 
@@ -83,24 +82,16 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'django_bot',
+        'USER': 'django_admin', # / L78.2
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ.get('DB_NAME', 'yourdbname'),  # django_bot
-#         'USER': os.environ.get('DB_USER', 'youruser'),  # django_admin / L78.2
-#         'PASSWORD': os.environ.get('DB_PASSWORD', 'yourpassword'),
-#         'HOST': os.environ.get('DB_HOST', 'host.docker.internal'), # Use host.docker.internal
-#         'PORT': os.environ.get('DB_PORT', '5432'),
-#     }
-# }
 
 
 
@@ -156,5 +147,14 @@ ZULIP_SITE = os.environ.get('ZULIP_SITE')
 ZULIP_ALLOW_INSECURE = True
 ZULIP_STAFF_IDS = [8,9,11,12,15]
 NONAME_CHANNEL_NAME = "Noname"
-
 MAX_FILE_SIZE = 5  # MBytes
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+try:
+    from conf.local_settings import *
+    print(40*"*", "Imported local_settings")
+except ImportError as e:
+    print(40*"*", "NOT Imported local_settings")
+    pass
+

@@ -15,4 +15,6 @@ zulip
 # mangum
 
 # Only required if using Postgres
-# psycopg2-binary
+psycopg2-binary
+
+

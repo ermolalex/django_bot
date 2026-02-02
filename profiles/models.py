@@ -16,7 +16,7 @@ class Company(models.Model):
 
 class Profile(AbstractUser):
     phone = models.CharField(max_length=15, unique=True, db_index=True, blank=True, null=True)
-    tg_id = models.IntegerField(unique=True, db_index=True, blank=True, null=True)
+    tg_id = models.BigIntegerField(unique=True, db_index=True, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.PROTECT, blank=True, null=True)
 
 
