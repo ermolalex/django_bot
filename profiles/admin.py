@@ -16,7 +16,7 @@ class ProfileAdmin(BaseUserAdmin):
     add_fieldsets = BaseUserAdmin.add_fieldsets + (
         ('Profile Fields', {'fields': ('phone', 'tg_id', 'company')}),
     )
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'phone', 'tg_id', 'company')
+    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'phone', 'tg_id', 'company')
 
 
 admin.site.register(Profile, ProfileAdmin)

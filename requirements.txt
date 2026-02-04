@@ -16,5 +16,5 @@ zulip
 
 # Only required if using Postgres
 psycopg2-binary
-
+whitenoise
 

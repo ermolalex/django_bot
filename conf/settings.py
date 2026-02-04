@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -130,7 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-#STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'staticfiles',
 # ]
@@ -155,6 +157,6 @@ try:
     from conf.local_settings import *
     print(40*"*", "Imported local_settings")
 except ImportError as e:
-    print(40*"*", "NOT Imported local_settings")
+    print(40*"*", "Using only prod settings")
     pass
 
