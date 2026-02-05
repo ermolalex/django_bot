@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$7x_b_afz1ww%limgw2^8*k_d-nkjow-)k(-my1^$f0oata_8g'
+SECRET_KEY = 'django-insecure'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -87,7 +87,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_bot',
-        'USER': 'django_admin', # / L78.2
+        'USER': 'django_admin', # / l78.2
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432',
@@ -143,7 +143,7 @@ BASE_SITE = os.environ.get("BASE_SITE")
 ADMIN_TG_ID = int(os.environ.get("ADMIN_TG_ID"))
 TG_WEBHOOK = f"{BASE_SITE}/webhook"
 
-ZULIP_API_KEY = os.environ.get('ZULIP_API_KEY')  # QNkYlT1BzG126AZtaBd9JBbk1kFANF6J
+ZULIP_API_KEY = os.environ.get('ZULIP_API_KEY')
 ZULIP_EMAIL = os.environ.get('ZULIP_EMAIL')
 ZULIP_SITE = os.environ.get('ZULIP_SITE')
 ZULIP_ALLOW_INSECURE = True
