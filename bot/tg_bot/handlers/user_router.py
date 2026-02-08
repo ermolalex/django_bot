@@ -209,7 +209,7 @@ async def user_message(message: Message) -> None:
         )
         return
 
-    logger.info(f"Получено сообщение от бота {message.text} от пользователя {user}")
+    logger.info(f"Получено сообщение от пользователя бота {user}: {message.text}")
 
     topic_name = user.get_zulip_topic_name()
     message_text = message.text

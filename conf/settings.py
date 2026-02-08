@@ -13,17 +13,17 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    #"whitenoise.runserver_nostatic",
     'django.contrib.staticfiles',
     'profiles',
     'main_site',
@@ -87,7 +88,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_bot',
-        'USER': 'django_admin', # / l78.2
+        'USER': 'django_admin',
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432',
@@ -118,19 +119,26 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ru'
 
 USE_I18N = True
 
 USE_TZ = True
-
+TIME_ZONE = 'Europe/Moscow'
+TIME_FORMAT = 'H:i'
+TIME_INPUT_FORMATS = [
+    '%H:%M:%S',  # '14:30:59'
+    '%H:%M:%S.%f', # '14:30:59.000200'
+    '%H:%M',     # '14:30'
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+FORCE_SCRIPT_NAME = "/dj"
+STATIC_URL = FORCE_SCRIPT_NAME + "/static/"
+
+#STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # STATICFILES_DIRS = [
@@ -152,6 +160,29 @@ NONAME_CHANNEL_NAME = "Noname"
 MAX_FILE_SIZE = 5  # MBytes
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / "logs/django.log",
+            "maxBytes": 1000000,
+            "backupCount":3,
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}
+
+
 
 try:
     from conf.local_settings import *

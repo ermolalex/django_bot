@@ -3,10 +3,11 @@ services:
     build: .
     volumes:
       - .:/app
+      - ./logs:/app/logs
     ports:
-      - 8000:80
-#    expose:
-#      - 80  #  установлен в traefik ?
+      - 8000:8000
+    expose:
+      - 80  #  установлен в traefik ?
     networks:
       default:
         aliases:

@@ -1,5 +1,5 @@
 import os
-import logging
+#import logging
 import asyncio
 from contextlib import asynccontextmanager
 
@@ -17,17 +17,17 @@ import uvicorn
 
 from bot.tg_bot.handlers.user_router import user_router
 from bot.tg_bot.create_bot import bot, dp, stop_bot, start_bot
+from bot.logger import create_logger
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "conf.settings")
 apps.populate(settings.INSTALLED_APPS)
 
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
+logger = create_logger(logger_name=__name__)
+#logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logging.info("Starting bot setup...")
+    logger.info("Starting bot setup...")
     dp.include_router(user_router)
     # dp.include_router(admin_router)
     await start_bot()
@@ -35,12 +35,12 @@ async def lifespan(app: FastAPI):
     await bot.set_webhook(url=webhook_url,
                           allowed_updates=dp.resolve_used_update_types(),
                           drop_pending_updates=True)
-    logging.info(f"Webhook set to {webhook_url}")
+    logger.info(f"Webhook set to {webhook_url}")
     yield
-    logging.info("Shutting down bot...")
+    logger.info("Shutting down bot...")
     await bot.delete_webhook()
     await stop_bot()
-    logging.info("Webhook deleted")
+    logger.info("Webhook deleted")
 
 app = FastAPI(lifespan=lifespan, title="Aeroplane", debug=settings.DEBUG)
 app.add_middleware(
@@ -53,16 +53,15 @@ app.add_middleware(
 # app.include_router(router, prefix="/api")
 app.mount("/dj", get_asgi_application())
 
-
 @app.post("/webhook")
 async def webhook(request: Request) -> None:
     await request.body()
     request_json = await request.json()
-    logging.info(f"Received webhook request: {request_json}")
+    #logger.info(f"Received webhook request: {request_json}")
     update = Update.model_validate(request_json, context={"bot": bot})
     await dp.feed_update(bot, update)
     #await say_after(0, update)
-    logging.info("Update processed")
+    logger.info("Update processed")
 
 
 if __name__ == "__main__":
