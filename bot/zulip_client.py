@@ -153,36 +153,21 @@ class ZulipClient():
 
         return []
 
+    def upload_file(self, file) -> str:
+        if not file:
+            return ''
+
+        try:
+            result = self.client.upload_file(file)
+            if result['result'] == 'success':
+                return result['url']
+        except Exception as e:
+            logger.error("Файл из ТГ не удалось загрузить в Zulip.")
+
+        return ''
 
 if __name__ == '__main__':
     try:
         client = ZulipClient()
     except ZulipException:
         sys.exit("Фатальная ошибка! Выполнение программы прекращено!")
-        
-        
-    # add channel / subscribe_to_channel
-    #
-    # print(client.subscribe_to_channel("+79219376763"))
-
-    # send_msg_to_channel
-    #
-    # client.send_msg_to_channel(
-    #     "+79219376763",
-    #     "tg_bot",
-    #     "Тестовое сообщение 5"
-    # )
-
-    # get_channel_id
-    #
-    # try:
-    #     ch_name = "Zulip"
-    #     print(f"ID of channel '{ch_name}' is: {client.get_channel_id(ch_name)}")
-    #     ch_name = "not_exist"
-    #     print(f"ID of channel '{ch_name}' is: {client.get_channel_id(ch_name)}")
-    # except ZulipException as e:
-    #     print(e)
-
-    # get_
-    group_id = 47 # ТехОтдел
-    print(client.get_group_members(group_id))

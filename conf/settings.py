@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'django_bot',
         'USER': 'django_admin',
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'localhost',
+        'HOST': 'host.docker.internal',  # 'localhost',
         'PORT': '5432',
     }
 }

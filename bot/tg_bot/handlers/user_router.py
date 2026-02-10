@@ -1,6 +1,7 @@
 import sys
 import json
 import asyncio
+from dataclasses import dataclass
 from asgiref.sync import sync_to_async
 
 import django
@@ -179,7 +180,7 @@ async def get_contact(message: Message):
         message_text = "Я новый пользователь"
         zulip_client.send_msg_to_channel(channel_id, topic_name, message_text)
     else:
-        msg_text = f"Получены контакты, но пользователя нет в Джанго: {contact}"
+        msg_text = f"Получены контакты, но пользователя нет в Джанго: {contact}"  # todo  может записать в Noname ?
         logger.error(msg_text)
         send_bot_event_msg_to_zulip(msg_text)
 
@@ -188,13 +189,15 @@ async def get_contact(message: Message):
         reply_markup=ReplyKeyboardRemove()
     )
 
+@dataclass
+class ZulipMessage:
+    channel_id: int
+    topik_name: str
+    text: str
 
 
 @user_router.message(F.text)
 async def user_message(message: Message) -> None:
-    """
-    """
-
     tg_user_id = message.from_user.id
     try:
         user = await Profile.objects.select_related('company').aget(tg_id=tg_user_id)
@@ -233,44 +236,61 @@ async def user_message(message: Message) -> None:
     await asyncio.sleep(0)
 
 
-# @user_router.message(F.photo)
-# async def get_photo(message: Message):
-#     user_tg_id = message.from_user.id
-#     filter={"tg_id": user_tg_id}
-#     user = db.get_user_one_or_none(filter, session)
-#
-#     if not user:
-#         await message.answer(
-#             "Вы еще не отправили ваш номер телефона.\n"
-#             "Нажмите на кнопку ОТПРАВИТЬ ниже.",
-#             reply_markup=kbs.contact_keyboard()
-#         )
-#         return
-#
-#     logger.info(f"Получено фото от пользователя {user}")
-#
-#     largest_photo = message.photo[-1]
-#     if largest_photo.file_size > settings.MAX_FILE_SIZE * 1024 * 1024:
-#         await message.answer(
-#             "Очень большой размер фото.\n"
-#             "Макс допустимый размер - 20МБ."
-#         )
-#         return
-#
-#     # фото сначала сохраняем на сервере бота
-#     destination = f"/tmp/{largest_photo.file_id}.jpg"
-#     await message.bot.download(file=largest_photo.file_id, destination=destination)
-#
-#     #затем отправляем на сервер zulip
-#     with open(destination, "rb") as f:
-#         result = zulip_client.client.upload_file(f)
-#
-#     #и отправим сообщение в Zulip с ссылкой на файл
-#     photo_url = f"{message.caption}\n[Фото]({result['url']})"
-#     zulip_client.send_msg_to_channel(user.zulip_channel_id, user.topic_name, photo_url)
-#
-#     await asyncio.sleep(0)
-#
+@user_router.message(F.photo)
+async def get_photo(message: Message):
+    # todo ниже большой кусок дублируетс
+    tg_user_id = message.from_user.id
+    try:
+        user = await Profile.objects.select_related('company').aget(tg_id=tg_user_id)
+    except Profile.DoesNotExist:
+        user = None
+
+    if not user:
+        await message.answer(
+            "Вы еще не отправили ваш номер телефона.\n"
+            "Нажмите на кнопку ОТПРАВИТЬ ниже.",
+            reply_markup=kbs.contact_keyboard()
+        )
+        return
+
+    logger.info(f"Получено фото от пользователя {user}")
+
+    topic_name = user.get_zulip_topic_name()
+    channel_id = user.company.channel_id
+
+    chat_type = message.chat.type
+    if 'group' in chat_type:  # сообщение отправлено из группы
+        topic_name = f"Группа_{message.chat.id}"
+
+    largest_photo = message.photo[-1]
+    max_size = settings.MAX_FILE_SIZE * 1024 * 1024
+    if largest_photo.file_size > max_size:
+        await message.answer(
+            f"Очень большой размер фото.\n"
+            f"Макс допустимый размер - {max_size}Б."
+        )
+        return
+
+    # фото сначала сохраняем на сервере ТГ
+    destination = f"/tmp/{largest_photo.file_id}.jpg"
+    await message.bot.download(file=largest_photo.file_id, destination=destination)
+
+    #затем отправляем на сервер zulip
+    try:
+        with open(destination, "rb") as f:
+            uploaded_file_url = zulip_client.upload_file(f)
+            if uploaded_file_url:
+                message_text = f"{message.caption}\n[Фото]({uploaded_file_url})"
+            else:
+                message_text = "Тут должна быть ссылка на файл, но файл не удалось получить."
+    except Exception as e:
+        message_text = f"Тут должна быть ссылка на файл, но файл не удалось получить: {e}"
+
+    #и отправим сообщение в Zulip с ссылкой на файл
+    zulip_client.send_msg_to_channel(channel_id, topic_name, message_text)
+
+    await asyncio.sleep(0)
+
 
 # @user_router.message((F.from_user.id == settings.ADMIN_TG_ID) & F.text.startswith('//'))
 # async def admin_command(message: Message) -> None:

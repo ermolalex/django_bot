@@ -5,9 +5,11 @@ services:
       - .:/app
       - ./logs:/app/logs
     ports:
-      - 8000:8000
+      - 8000:80
     expose:
       - 80  #  установлен в traefik ?
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
     networks:
       default:
         aliases:
