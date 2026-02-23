@@ -10,10 +10,6 @@ uvicorn[standard]
 requests
 zulip
 
-# Only required for serverless deployment
-# mangum
-# djantic2
-
 # Only required if using Postgres
 psycopg2-binary
 whitenoise
