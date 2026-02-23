@@ -292,62 +292,6 @@ async def get_photo(message: Message):
     await asyncio.sleep(0)
 
 
-# @user_router.message((F.from_user.id == settings.ADMIN_TG_ID) & F.text.startswith('//'))
-# async def admin_command(message: Message) -> None:
-#     """
-#     админская команда
-#
-#     todo сделать проверки try...except..
-#     """
-#     cmd = message.text
-#     logger.info(f'Получена команда {cmd}')
-#
-#     if '/list' in cmd:
-#         parts = cmd.split()
-#         try:
-#             from_id = int(parts[1])
-#         except IndexError:
-#             from_id = 0
-#
-#         user_list = db.get_40_users_from_id(from_id, session)
-#         list_json = ''
-#
-#         for user in user_list:
-#             list_json += user.model_dump_json()
-#             list_json += '\n'
-#
-#         zulip_client.send_msg_to_channel(
-#             channel_name="bot_events",
-#             topic="ответы на команды",
-#             msg=list_json,
-#         )
-#         await message.answer('Команда /list обработана')
-#         logger.info('Команда /list обработана')
-#
-#     elif '/upd' in cmd:
-#         parts = cmd.split()
-#         user_id = int(parts[1])
-#         update_data = json.loads(parts[2])
-#         db.update_user_from_dict(user_id, update_data, session)
-#
-#         await message.answer(f"Запись пользователя {user_id} изменена")
-#
-#     elif '/del' in cmd:
-#         parts = cmd.split()
-#         user_id = int(parts[1])
-#         user_str = db.delete_user(user_id, session)
-#         if user_str:
-#             await message.answer(f"{user_str} удален")
-#         else:
-#             await message.answer(f"Пользователь с id={user_id} не найден.")
-#
-#     else:
-#         await message.answer(f"Неопознанная команда: {cmd}")
-#
-
-
-
-
 """
 Message(
     message_id=743, date=datetime.datetime(2026, 1, 18, 15, 7, 19, tzinfo=TzInfo(0)), 

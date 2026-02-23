@@ -1,11 +1,10 @@
-django
-pydantic
-fastapi
-djantic2
+django==6.0.1
+pydantic==2.12.5
+fastapi==0.128.0
 pytest
 pytest-django
 python-dotenv
-aiogram
+aiogram==3.24.0
 uvicorn[standard]
 
 requests
@@ -13,6 +12,7 @@ zulip
 
 # Only required for serverless deployment
 # mangum
+# djantic2
 
 # Only required if using Postgres
 psycopg2-binary

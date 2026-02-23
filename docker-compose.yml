@@ -2,18 +2,19 @@ services:
   bot:
     build: .
     volumes:
-      - .:/app
+      #- .:/app   # если это включить, затирается папка staticfiles, сгенерированная в Dockerfile
       - ./logs:/app/logs
-    ports:
-      - 8000:80
+    #ports:
+    #  - 8000:80
     expose:
       - 80  #  установлен в traefik ?
+
     extra_hosts:
-      - "host.docker.internal:172.17.0.1"
+      - "host.docker.internal:host-gateway"
     networks:
-      default:
-        aliases:
-          - web_internal
+#      default:
+#        aliases:
+#          - web_internal
       traefik:
 
     labels: # new
@@ -26,4 +27,4 @@ services:
 networks:
   traefik:
     name: traefik
-#    external: true
+    external: true

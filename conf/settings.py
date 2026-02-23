@@ -31,8 +31,9 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '103.88.243.84',
+    'old.kik-soft.ru',
 ]
+CSRF_TRUSTED_ORIGINS = ['https://old.kik-soft.ru']
 
 
 # Application definition
@@ -92,6 +93,11 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': 'host.docker.internal',  # 'localhost',
         'PORT': '5432',
+        'OPTIONS': {
+            # Set the connection timeout to 5 seconds
+            'connect_timeout': 5,
+        }
+
     }
 }
 
