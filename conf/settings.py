@@ -91,7 +91,7 @@ DATABASES = {
         'NAME': 'django_bot',
         'USER': 'django_admin',
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'host.docker.internal',  # 'localhost',
+        'HOST': os.environ.get('DB_HOST'),  # 'host.docker.internal',  # 'localhost',
         'PORT': '5432',
         'OPTIONS': {
             # Set the connection timeout to 5 seconds

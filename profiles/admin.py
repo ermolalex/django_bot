@@ -11,12 +11,12 @@ admin.site.register(Company, CompanyAdmin)
 
 class ProfileAdmin(BaseUserAdmin):
     fieldsets = BaseUserAdmin.fieldsets + (
-        ('Profile Fields', {'fields': ('phone', 'tg_id', 'company')}),
+        ('Profile Fields', {'fields': ('phone', 'tg_id', 'max_id', 'company')}),
     )
     add_fieldsets = BaseUserAdmin.add_fieldsets + (
-        ('Profile Fields', {'fields': ('phone', 'tg_id', 'company')}),
+        ('Profile Fields', {'fields': ('phone', 'tg_id', 'max_id', 'company')}),
     )
-    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'phone', 'tg_id', 'company')
+    list_display = ('id', 'username', 'phone', 'tg_id', 'max_id', 'company', 'first_name', 'last_name', 'email', 'is_staff')
 
 
 admin.site.register(Profile, ProfileAdmin)
